@@ -1,4 +1,15 @@
-import { ArtistsJSON } from './data'
+import {
+  ArtistsJSON,
+  ArtistsListJSON,
+  DrakeAlbums,
+  EminemAlbums,
+  KanyeAlbums,
+  DrakeRelated,
+  EminemRelated,
+  KanyeRelated,
+} from './data'
+
+const token = ''
 
 const fetch = (url, options) => {
   return window.fetch(
@@ -53,3 +64,33 @@ export async function fetchArtistRelated (id) {
     }
   })
 } 
+
+const delay = 2000
+
+export function fakeFetchArtists () {
+  return new Promise(resolve => setTimeout(resolve(ArtistsListJSON), delay))
+}
+
+export function fakeFetchDrakeAlbums () {
+  return new Promise(resolve => setTimeout(resolve(DrakeAlbums), delay))
+}
+
+export function fakeFetchEminemAlbums () {
+  return new Promise(resolve => setTimeout(resolve(EminemAlbums), delay))
+}
+
+export function fakeFetchKanyeAlbums () {
+  return new Promise(resolve => setTimeout(resolve(KanyeAlbums), delay))
+}
+
+export function fakeFetchDrakeRelated () {
+  return new Promise(resolve => setTimeout(resolve(DrakeRelated), delay))
+}
+
+export function fakeFetchEminemRelated () {
+  return new Promise(resolve => setTimeout(resolve(EminemRelated), delay))
+}
+
+export function fakeFetchKanyeRelated () {
+  return new Promise(resolve => setTimeout(resolve(KanyeRelated), delay))
+}

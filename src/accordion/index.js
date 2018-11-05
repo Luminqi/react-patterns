@@ -31,7 +31,7 @@ export class Accordion extends React.Component {
             <div>
               {items.map((item, index) => (
                 <AccordionItem key={item.title} direction='vertical'>
-                  <AccordionButton {...getButtonProps({onClick: this.onClick,  index})}>
+                  <AccordionButton {...getButtonProps({onClick: this.onClick, index})}>
                     {item.title}
                   </AccordionButton>
                   <AccordionContent isOpen={openIndexes.includes(index)}>

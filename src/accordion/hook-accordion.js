@@ -45,7 +45,7 @@ export const combineReducers = (...reducers) => (state, action) =>
   reducers.reduce((newState, reducer) => reducer(newState, action), state)
 
     
-function useAccordion (stateReducer = (state, action) => state, initialOpenIndexes) {
+export function useAccordion (stateReducer = (state, action) => state, initialOpenIndexes) {
   const openIndexes = initialOpenIndexes ? initialOpenIndexes : [0]
   const [state, dispatch] = useReducer(combineReducers(accordionReducer, stateReducer), {openIndexes})
   const getButtonProps = ({onClick, index, ...props} = {}) => ({
@@ -53,7 +53,6 @@ function useAccordion (stateReducer = (state, action) => state, initialOpenIndex
     ...props
   })
   const handleButtonClick = index =>  {
-    console.log('click')
     const type = state.openIndexes.includes(index) ? 'close' : 'open'
     dispatch({type, index})
   }

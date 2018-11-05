@@ -1,0 +1,14 @@
+.artists {
+  display: flex;
+}
+.artist {
+  display: flex;
+  flex-direction: column;
+}
+
+.artistImg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+

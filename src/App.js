@@ -3,7 +3,8 @@ import React, { Component, Suspense } from 'react';
 // import { items } from './accordion/data'
 // import { Accordion } from './accordion/hook-accordion'
 import { Spinner } from './components/spinner'
-const HomePage = React.Lazy(() => import('./components/homePage'))
+
+const HomePage = React.lazy(() => import('./components/homePage'))
 
 class App extends Component {
   render() {
