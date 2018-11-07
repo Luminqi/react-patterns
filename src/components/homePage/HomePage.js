@@ -1,21 +1,44 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import { unstable_createResource as createResource } from 'react-cache'
 import { Spinner } from '../spinner'
 import { Img } from '../img'
 import { fakeFetchArtists } from '../../api'
-import { useAccordion, combineReducers, single, preventClose} from '../../accordion/hook-accordion'
+// import { useAccordion, combineReducers, single, preventClose} from '../../accordion/hook-accordion'
+import { useAccordion, single, preventClose} from '../../hookComponent/accordion/hook-accordion'
+import { useSwitch } from '../../hookComponent/switch/useSwitch'
+import { combineReducers } from '../../hookComponent/uitls/util'
 import './HomePage.css'
 
 const ArtistResource = createResource(fakeFetchArtists)
 
 function HomePage (props) {
-  const {openIndexes, getButtonProps} = useAccordion(combineReducers(single, preventClose))
+  // const [indexes, setIndexes] = useState([1])
+  // const onStateChange = (state, action) => {
+  //   console.log(state)
+  //   console.log(action)
+  //   setIndexes(prevIndexes => {
+  //     console.log(prevIndexes)
+  //     const openIndexes = [Math.floor(Math.random()*3)]
+  //     console.log(openIndexes)
+  //     return openIndexes
+  //   })
+  // }
+  const {openIndexes, getButtonProps} = useAccordion(
+    {
+      stateReducer: combineReducers(single, preventClose),
+      // state: {openIndexes: indexes},
+      // onStateChange
+    }
+  )
+  const {checked, getSwitchProps} = useSwitch()
   const artists = ArtistResource.read()
-  const onClick = () => {
+  const onClick = (action) => {
+    console.log(action)
     console.log('user defined onClick')
   }
   return (
     <div className="homePage">
+      <div {...getSwitchProps({onClick})}>{checked ? 'on' : 'off'}</div>
       <Artists>
         {artists.map((artist, index) => (
            <Artist name={artist.name} key={artist.id} imgs={artist.images} {...getButtonProps({onClick, index})} />

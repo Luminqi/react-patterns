@@ -1,0 +1,17 @@
+.accordionItem {
+  width: 450px;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.horizontal {
+  display: flex;
+}
+
+.content {
+  width: 100%;
+}

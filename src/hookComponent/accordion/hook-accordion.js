@@ -1,15 +1,6 @@
 import React, { useReducer } from 'react'
+import { callAll, combineReducers } from '../uitls/util'
 import './accordion.css'
-
-function callAll (...fns) {
-  return (...args) => {
-    fns.forEach(fn => {
-      if (fn) {
-        fn(...args)
-      }
-    })
-  }
-}
 
 function accordionReducer (state, action) {
   switch (action.type) {
@@ -40,34 +31,40 @@ export function preventClose (state, action) {
       return state 
   }
 }
-
-export const combineReducers = (...reducers) => (state, action) => 
-  reducers.reduce((newState, reducer) => reducer(newState, action), state)
-
     
-export function useAccordion (
-  {stateReducer, initialOpenIndexes, state, onStateChange} = {
-    stateReducer: (state, action) => state,
-    initialOpenIndexes: [0],
-  }
-) {
+export function useAccordion ({
+  stateReducer = (state, action) => state,
+  initialOpenIndexes = [0],
+  state,
+  onStateChange
+} = {}) {
   console.log('useAccordion')
-  const openIndexes =  (state && state.openIndexes) || initialOpenIndexes
+  const openIndexes = (state && state.openIndexes) || initialOpenIndexes
   const [accordionState, dispatch] = useReducer(combineReducers(accordionReducer, stateReducer), {openIndexes})
-  const getButtonProps = ({onClick, index, ...props} = {}) => ({
-    onClick: callAll(onClick, () => handleButtonClick(index)),
-    ...props
-  })
-  const handleButtonClick = index =>  {
-    const openIndexes = (state && state.openIndexes) || accordionState.openIndexes
+  const getIndexes = () => {
+    return (state && state.openIndexes) || accordionState.openIndexes
+  }
+  const getButtonProps = ({onClick, index, ...props}) => {
+    const openIndexes = getIndexes()
     const type = openIndexes.includes(index) ? 'close' : 'open'
-    dispatch({type, index})
+    const action = {type, index}
+    return {
+      onClick: callAll(
+        (...arg) => onClick(action, ...arg), 
+        () => handleButtonClick(action)
+      ),
+      ...props
+    }
+  }
+  const handleButtonClick = action =>  {
+    dispatch(action)
     if (typeof onStateChange === 'function') {
-      onStateChange(accordionState, {type, index})
+      const openIndexes = getIndexes()
+      onStateChange(openIndexes, action)
     }
   }
   return {
-    openIndexes: (state && state.openIndexes) || accordionState.openIndexes,
+    openIndexes: getIndexes(),
     getButtonProps
   }
 }
