@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
 import { callAll, combineReducers } from '../uitls/util'
 
 const switchReducer = (state, action) => {
@@ -18,28 +18,35 @@ export const useSwitch = ({
 } = {}) => {
   const checked = (state && state.checked) || defaultChecked
   const [switchState, dispatch] = useReducer(combineReducers(switchReducer, stateReducer), {checked})
+  const [act, setAction] = useState(null)
   const getChecked = () => {
     return (state && state.checked) || switchState.checked
   }
-  const getSwitchProps = ({onClick, ...props}) => {
+  const getSwitchProps = ({onClick, ...props} = {}) => {
     const checked = getChecked()
     const type = checked ? 'off' : 'on'
     const action = {type}
+    const handler = typeof onClick === 'function'
+      ? callAll(
+          (...arg) => onClick(action, ...arg), 
+          () => handleSwitchClick(action)
+        )
+      : () => handleSwitchClick(action)
     return {
-      onClick: callAll(
-        (...arg) => onClick(action, ...arg), 
-        () => handleSwitchClick(action)
-      ),
+      onClick: handler,
       ...props
     }
   }
   const handleSwitchClick = action => {
+    setAction(action)
     dispatch(action)
+  }
+  useEffect(()=> {
     if (typeof onStateChange === 'function') {
       const checked= getChecked()
-      onStateChange(checked, action)
+      onStateChange(checked, act)
     }
-  }
+  }, [switchState.checked])
   return {
     checked: getChecked(),
     getSwitchProps

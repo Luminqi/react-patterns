@@ -8,26 +8,30 @@ import { useAccordion, single, preventClose} from '../../hookComponent/accordion
 import { useSwitch } from '../../hookComponent/switch/useSwitch'
 import { combineReducers } from '../../hookComponent/uitls/util'
 import './HomePage.css'
+import { Carousel } from '../../hookComponent/carousel/useCarousel'
 
 const ArtistResource = createResource(fakeFetchArtists)
 
 function HomePage (props) {
-  // const [indexes, setIndexes] = useState([1])
-  // const onStateChange = (state, action) => {
-  //   console.log(state)
-  //   console.log(action)
-  //   setIndexes(prevIndexes => {
-  //     console.log(prevIndexes)
-  //     const openIndexes = [Math.floor(Math.random()*3)]
-  //     console.log(openIndexes)
-  //     return openIndexes
-  //   })
-  // }
+  const [indexes, setIndexes] = useState([1])
+  const onStateChange = (openIndexes, action) => {
+    console.log(openIndexes)
+    console.log(action)
+    setIndexes(prevIndexes => {
+      console.log(prevIndexes)
+      let nextIndexes = null
+      if (action) {
+        nextIndexes = [(action.index + 1) % 3]
+      }
+      console.log(nextIndexes)
+      return nextIndexes || openIndexes
+    })
+  }
   const {openIndexes, getButtonProps} = useAccordion(
     {
       stateReducer: combineReducers(single, preventClose),
-      // state: {openIndexes: indexes},
-      // onStateChange
+      state: {openIndexes: indexes},
+      onStateChange
     }
   )
   const {checked, getSwitchProps} = useSwitch()
@@ -38,6 +42,7 @@ function HomePage (props) {
   }
   return (
     <div className="homePage">
+      <Carousel />
       <div {...getSwitchProps({onClick})}>{checked ? 'on' : 'off'}</div>
       <Artists>
         {artists.map((artist, index) => (
